@@ -32,4 +32,25 @@ class QrCodeController extends Controller
             return response()->json('Error when submitting data');
         }
     }
+
+    // check duplicate qr code
+    public function checkDuplicate(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'qr_code_data' => 'required',
+        ]);
+
+        if($validator->fails()) {
+            return response()->json('Validation error: ', $validator->errors());
+        }
+
+        $qr_code_data = $request->input('qr_code_data');
+        $is_duplicate = DB::select("SELECT qr_code_data FROM qr_codes WHERE qr_code_data = ?", [$qr_code_data]);
+        
+        if(empty($is_duplicate)){
+            return response()->json(['is_duplicate' => false]);        
+        } else {
+            return response()->json(['is_duplicate' => true]); 
+        }        
+    }
 }
