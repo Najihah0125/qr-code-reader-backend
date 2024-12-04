@@ -45,7 +45,7 @@ class QrCodeController extends Controller
         }
 
         $qr_code_data = $request->input('qr_code_data');
-        $is_duplicate = DB::select("SELECT qr_code_data FROM qr_codes WHERE qr_code_data = ?", [$qr_code_data]);
+        $is_duplicate = DB::select("SELECT 1 FROM qr_codes WHERE qr_code_data = ?", [$qr_code_data]);
         
         if(empty($is_duplicate)){
             return response()->json(['is_duplicate' => false]);        
