@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class QrCodeController extends Controller
@@ -21,10 +22,11 @@ class QrCodeController extends Controller
         }
 
         $qr_code_data = $request->input('qr_code_data');
-        $created_at = Carbon::now();
-        $updated_at = Carbon::now();
+        $scanned_at = $request->input('scanned_datetime');
+        $created_at = Carbon::now('Asia/Kuala_Lumpur');
+        $updated_at = Carbon::now('Asia/Kuala_Lumpur');
 
-        $insert_data = DB::insert("INSERT INTO qr_codes (qr_code_data, created_at, updated_at) values (?,?,?)", [$qr_code_data, $created_at, $updated_at]);
+        $insert_data = DB::insert("INSERT INTO qr_codes (qr_code_data, scanned_at, created_at, updated_at) values (?,?,?,?)", [$qr_code_data, $scanned_at, $created_at, $updated_at]);
 
         if ($insert_data) {
             return response()->json('QR code has been submitted');
