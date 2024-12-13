@@ -21,6 +21,14 @@ class NfcController extends Controller
         }
 
         $nfc_data = $request->input('nfc_data');
+
+        // check duplicate
+        $is_duplicate = DB::select("SELECT 1 FROM nfc WHERE nfc_data = ?", [$nfc_data]);
+
+        if(!empty($is_duplicate)) {
+            return response()->json(['is_duplicate' => true]);
+        }
+        
         $scanned_at = $request->input('scanned_datetime');
         $created_at = Carbon::now('Asia/Kuala_Lumpur');
         $updated_at = Carbon::now('Asia/Kuala_Lumpur');
@@ -31,27 +39,6 @@ class NfcController extends Controller
             return response()->json('NFC has been submitted');
         } else {
             return response()->json('Error when submitting data');
-        }
-    }
-
-    // check duplicate NFC
-    public function checkDuplicate(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'nfc_data' => 'required',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json('Validation error: ', $validator->errors());
-        }
-
-        $nfc_data = $request->input('nfc_data');
-        $is_duplicate = DB::select("SELECT 1 FROM nfc WHERE nfc_data = ?", [$nfc_data]);
-
-        if(empty($is_duplicate)) {
-            return response()->json(['is_duplicate' => false]);
-        } else {
-            return response()->json(['is_duplicate' => true]);
         }
     }
 }
